@@ -24,7 +24,11 @@ export class ViewNode {
 
     public nativeView: View;
     private _parentView: View;
+
     private _attachedToView: boolean = false;
+    private _nativeViewCreated: boolean = false;
+    private _nativeViewAttached: boolean = false;
+
     private attributes: Map<string, any> = new Map<string, any>();
     private cssClasses: Map<string, boolean> = new Map<string, boolean>();
     private static whiteSpaceSplitter = /\s+/;
@@ -83,7 +87,8 @@ export class ViewNode {
 
         this._attachedToView = true;
 
-        this.createUI(atIndex);
+        this.createUI();
+        this.attachToNativeParent(atIndex);
         this.attachUIEvents();
 
         this.children.forEach(child => {
@@ -93,24 +98,51 @@ export class ViewNode {
         this.postAttachUI();
     }
 
-    private createUI(attachAtIndex: number): boolean {
-        if (!isKnownView(this.viewName))
+    private createUI() {
+        if (this._nativeViewCreated) {
+            console.log("Reattaching old view: " + this.viewName);
             return;
+        }
+
+        if (!isKnownView(this.viewName)) {
+            return;
+        }
 
         console.log('createUI: ' + this.viewName +
-            ', attachAt: ' + attachAtIndex +
             ', parent: ' + this.parentNode.viewName +
             ', parent UI ' + (<any>this.parentNativeView.constructor).name);
 
         let viewClass = getViewClass(this.viewName);
-        if (!this.nativeView) {
-            this.nativeView = new viewClass();
-        } else {
-            console.log('Reattaching old view: ' + this.viewName);
-        }
-
+        this.nativeView = new viewClass();
         this.configureUI();
 
+        this._nativeViewCreated = true;
+    }
+
+    private attachToNativeParent(attachAtIndex: number) {
+        if (!this.nativeView) {
+            return;
+        }
+
+        if (this._nativeViewAttached) {
+            console.log("View already attached to native: " + this.viewName);
+            return;
+        }
+
+        if (this.parentNode.isComplexProperty) {
+            // complex property - we will deal with this in postAttachUI()    
+            console.log('attachToNativeParent SKIP attach becaus parent is complex property: ' + this.viewName +
+                ', attachAt: ' + attachAtIndex +
+                ', parent: ' + this.parentNode.viewName);
+            return;
+        }
+
+        console.log('attachToNativeParent: ' + this.viewName +
+            ', attachAt: ' + attachAtIndex +
+            ', parent: ' + this.parentNode.viewName +
+            ', parent UI ' + (<any>this.parentNativeView.constructor).name);
+
+        this._nativeViewAttached = true;
         if (this.parentNativeView instanceof LayoutBase) {
             let parentLayout = <LayoutBase>this.parentNativeView;
             if (attachAtIndex != -1) {
@@ -127,8 +159,6 @@ export class ViewNode {
             (<ContentView>this.parentNativeView).content = this.nativeView;
         } else if ((<any>this.parentNativeView)._addChildFromBuilder) {
             (<any>this.parentNativeView)._addChildFromBuilder(this.viewName, this.nativeView);
-        } else if (this.parentNode.isComplexProperty) {
-            // complex property - we will deal with this in postAttachUI()            
         }
         else {
             console.log('parentNativeView: ' + this.parentNativeView);
@@ -137,9 +167,9 @@ export class ViewNode {
     }
 
     private postAttachUI() {
-        if (this.isComplexProperty) {
+        if (this.isComplexProperty || !this._nativeViewAttached) {
             let nativeParent = <any>this.parentNativeView;
-            if (!nativeParent) {
+            if (!this.parentNode || !nativeParent) {
                 return;
             }
 
@@ -157,6 +187,8 @@ export class ViewNode {
                 else {
                     this.parentNode.setAttribute(propertyName, realChildren[0]);
                 }
+
+                this._nativeViewAttached = true;
             }
         }
     }
@@ -261,7 +293,7 @@ export class ViewNode {
             return;
         }
 
-        console.log('ViewNode.attachUIEvents: ' + this.viewName + ' ' + this.eventListeners.size);
+        // console.log('ViewNode.attachUIEvents: ' + this.viewName + ' ' + this.eventListeners.size);
         this.eventListeners.forEach((callback, eventName) => {
             this.attachNativeEvent(eventName, callback);
         });
@@ -272,7 +304,7 @@ export class ViewNode {
             return;
         }
 
-        console.log('ViewNode.detachUIEvents: ' + this.viewName + ' ' + this.eventListeners.size);
+        // console.log('ViewNode.detachUIEvents: ' + this.viewName + ' ' + this.eventListeners.size);
         this.eventListeners.forEach((callback, eventName) => {
             this.detachNativeEvent(eventName, callback);
         });
@@ -297,13 +329,13 @@ export class ViewNode {
     }
 
     private attachNativeEvent(eventName, callback) {
-        console.log('attachNativeEvent ' + eventName);
+        console.log('attachNativeEvent view: ' + this.viewName + ' event: ' + eventName);
         let resolvedEvent = this.resolveNativeEvent(eventName);
         this.nativeView.addEventListener(resolvedEvent, callback);
     }
 
     private detachNativeEvent(eventName, callback) {
-        console.log('detachNativeEvent ' + eventName);
+        console.log('detachNativeEvent view: ' + this.viewName + ' event: ' + eventName);
         let resolvedEvent = this.resolveNativeEvent(eventName);
         this.nativeView.removeEventListener(resolvedEvent, callback);
     }
@@ -330,11 +362,11 @@ export class ViewNode {
         childNode.detachFromView();
     }
 
-    public detachFromView(): void {
+    private detachFromView(detachFromNative: boolean = true): void {
         this._attachedToView = false;
 
         this.detachUIEvents();
-        if (this.nativeView) {
+        if (detachFromNative && this.nativeView && this._nativeViewAttached) {
             let nativeParent = this.nativeView.parent;
             if (nativeParent) {
                 if (nativeParent instanceof LayoutBase) {
@@ -345,11 +377,15 @@ export class ViewNode {
                 else {
                     nativeParent._removeView(this.nativeView);
                 }
+                
+                // Detach only the first native element
+                detachFromNative = false;
+                this._nativeViewAttached = false;
             }
         }
 
         this.children.forEach((childNode) => {
-            childNode.detachFromView();
+            childNode.detachFromView(detachFromNative);
         });
     }
 
