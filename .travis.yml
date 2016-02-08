@@ -13,7 +13,6 @@ before_cache:
 
 cache:
     directories:
-        - node_modules
         - .nvm
         - $HOME/.gradle/caches/
         - $HOME/.gradle/wrapper/
@@ -30,5 +29,6 @@ before_script:
 
 script:
     - cd ./tests
+    - npm install
     - tns platform add android
     - tns test android --emulator
