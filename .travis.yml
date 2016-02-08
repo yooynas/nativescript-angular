@@ -29,5 +29,6 @@ before_script:
     - android-wait-for-emulator
 
 script:
-    - cd ./tests && tns platform add android
-    - cd ./tests && tns test android --emulator
+    - cd ./tests
+    - tns platform add android
+    - tns test android --emulator
