@@ -22,7 +22,6 @@ install:
     - nvm install 4
     - npm install -g nativescript --ignore-scripts
     - tns usage-reporting disable
-    - cd ./tests && tns platform add android
 
 before_script:
     - echo no | android create avd --force -n test -t android-19 -b armeabi-v7a
@@ -30,4 +29,5 @@ before_script:
     - android-wait-for-emulator
 
 script:
+    - cd ./tests && tns platform add android
     - cd ./tests && tns test android --emulator
