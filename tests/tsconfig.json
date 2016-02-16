@@ -18,10 +18,11 @@
         "app/app.component.ts",
         "app/tests/bootstrap.ts",
         "typings/mocha.d.ts",
-        "node_modules/tns-core-modules/tns-core-modules.d.ts"
+        "typings/chai.d.ts",
+        "node_modules/tns-core-modules/tns-core-modules.base.d.ts"
     ],
     "filesGlob": [
-        "node_modules/tns-core-modules/tns-core-modules.d.ts",
+        "node_modules/tns-core-modules/tns-core-modules.base.d.ts",
         "app/**/*.ts"
     ],
     "exclude": [

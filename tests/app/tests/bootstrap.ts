@@ -1,9 +1,10 @@
 //stash it here before Angular runs it over...
-const realAssert = global.assert;
+const realAssert = (<any>global).assert;
 import "reflect-metadata";
+import {assert} from "chai";
 import {bootstrap} from "../nativescript-angular/application";
 import {Component} from "angular2/core";
-global.assert = realAssert;
+(<any>global).assert = realAssert;
 
 @Component({
     template: "<Button text='OHAI'></Button>"
