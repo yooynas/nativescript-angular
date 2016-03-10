@@ -1,13 +1,12 @@
-import {Directive, ElementRef, Renderer, Self, forwardRef, Provider} from 'angular2/core';
+import {Directive, ElementRef, Renderer, Self, forwardRef, provide} from 'angular2/core';
 import {NG_VALUE_ACCESSOR, ControlValueAccessor} from 'angular2/src/common/forms/directives/control_value_accessor';
-import {isBlank, CONST_EXPR} from 'angular2/src/facade/lang';
+import {isBlank} from 'angular2/src/facade/lang';
 
-const CHECKED_VALUE_ACCESSOR = CONST_EXPR(new Provider(
-    NG_VALUE_ACCESSOR, { useExisting: forwardRef(() => CheckedValueAccessor), multi: true }));
+const CHECKED_VALUE_ACCESSOR = provide(NG_VALUE_ACCESSOR, { useExisting: forwardRef(() => CheckedValueAccessor), multi: true });
 
 /**
- * The accessor for writing a text and listening to changes that is used by the
- * {@link NgModel}, {@link NgFormControl}, and {@link NgControlName} directives.
+ * The accessor for setting a checked property and listening to changes that is used by the
+ * {@link NgModel} directives.
  *
  *  ### Example
  *  ```
@@ -16,9 +15,6 @@ const CHECKED_VALUE_ACCESSOR = CONST_EXPR(new Provider(
  */
 @Directive({
     selector: 'Switch[ngModel]',
-    // TODO: vsavkin replace the above selector with the one below it once
-    // https://github.com/angular/angular/issues/3011 is implemented
-    // selector: '[ngControl],[ngModel],[ngFormControl]',
     host: { '(checkedChange)': 'onChange($event.value)' },
     bindings: [CHECKED_VALUE_ACCESSOR]
 })

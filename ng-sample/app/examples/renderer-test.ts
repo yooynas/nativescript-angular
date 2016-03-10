@@ -1,5 +1,5 @@
 import {Component, Directive, Host, ElementRef, Input} from 'angular2/core';
-import { Observable } from 'data/observable';
+import {Observable} from 'data/observable';
 import {TextValueAccessor} from '../nativescript-angular/value-accessors/text-value-accessor';
 import {CheckedValueAccessor} from '../nativescript-angular/value-accessors/checked-value-accessor';
 
@@ -28,9 +28,21 @@ export class ProgressComponent {
 @Component({
 	selector: 'renderer-test',
     directives: [TemplatedComponent, ProgressComponent, TextValueAccessor, CheckedValueAccessor],
-	template: `    
+	template: `
     <StackLayout orientation='vertical'>
         <Progress value="50" style="color: red"></Progress>
+        <!--<TimePicker [(ngModel)]='model.deliveryTime' ></TimePicker>
+        <Label [text]='model.deliveryTime' ></Label>
+        <DatePicker [(ngModel)]='model.deliveryDate' ></DatePicker>
+        <Label [text]='model.deliveryDate' ></Label>
+        <SearchBar [(ngModel)]='model.search'></SearchBar>
+        <Label [text]='model.search'></Label>
+        <Slider [(ngModel)]='model.sliderTest'></Slider>
+        <Label [text]='model.sliderTest'></Label>
+        <ListPicker [items]='model.listPickerItems' [(ngModel)]='model.selectedIndex'></ListPicker>
+        <TextField [(ngModel)]='model.selectedIndex'></TextField>
+        <SegmentedBar [items]='model.segmentedBarItems' [(ngModel)]='model.selectedIndex'></SegmentedBar>
+        <Label [text]='model.selectedIndex'></Label>-->
         <Switch [(ngModel)]='model.testBoolean'></Switch>
         <Label [text]='model.testBoolean'></Label>
         <Label [text]='model.test'></Label>
@@ -63,7 +75,23 @@ export class RendererTest {
         this.showDetails = true;
         this.detailsText = 'plain ng-if directive \ndetail 1-2-3...';
         this.moreDetailsText = 'More details:';
-        this.model = new Observable({'test': 'Jack', 'testBoolean': false});
+        this.model = new Observable({
+            'test': 'Jack',
+            'testBoolean': false,
+            'deliveryDate': new Date(),
+            'deliveryTime': new Date(),
+            'sliderTest': 0,
+            'search': null,
+            'selectedIndex': 0,
+            'listPickerItems': [
+                1,2,3,4,5
+            ],
+            'segmentedBarItems': [
+                {'title': 'first'},
+                {'title': 'second'},
+                {'title': 'third'}
+            ]
+        });
 
         this.detailLines = [
             "ngFor inside a ngIf 1",
