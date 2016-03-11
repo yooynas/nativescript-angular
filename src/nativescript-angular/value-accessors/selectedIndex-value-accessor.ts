@@ -38,7 +38,14 @@ export class SelectedIndexValueAccessor implements ControlValueAccessor {
                 normalizedValue = isNaN(parsedValue) ? 0 : parsedValue;
             }
         }
-        this._renderer.setElementProperty(this._elementRef.nativeElement, 'selectedIndex', Math.round(normalizedValue));
+        const view = this._elementRef.nativeElement;
+        const oldSelectedIndex = view.selectedIndex
+        const newSelectedIndex = Math.round(normalizedValue);
+
+        if (true || oldSelectedIndex !== newSelectedIndex) {
+            //this._renderer.setElementProperty(view, 'selectedIndex', newSelectedIndex);
+            view.selectedIndex = newSelectedIndex;
+        }
     }
 
     registerOnChange(fn: (_: any) => void): void { this.onChange = fn; }

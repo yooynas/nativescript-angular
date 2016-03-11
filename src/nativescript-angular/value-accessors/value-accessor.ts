@@ -26,9 +26,29 @@ export class ValueAccessor implements ControlValueAccessor {
 
     writeValue(value: any): void {
         var normalizedValue = isBlank(value) ? 0 : value;
-        this._renderer.setElementProperty(this._elementRef.nativeElement, 'value', normalizedValue);
+        console.log('value: ' + typeof(value) + '/' + value + ' ' + typeof(normalizedValue) + "/" + normalizedValue);
+        //this._renderer.setElementProperty(this._elementRef.nativeElement, 'value', normalizedValue);
+        this._elementRef.nativeElement.value = normalizedValue;
     }
 
-    registerOnChange(fn: (_: any) => void): void { this.onChange = fn; }
+    private pendingChangeNotification: number = 0;
+
+    registerOnChange(fn: (_: any) => void): void {
+        //this._elementRef.nativeElement.on('valueChange', (args) => {
+            //console.log('onChange: ' + args.object.value);
+            //global.zone.run(() => fn(args.object.value));
+        //});
+        this.onChange = (arg) => {
+            console.log('onChange: ' + arg);
+            if (this.pendingChangeNotification) {
+                clearTimeout(this.pendingChangeNotification);
+            }
+            this.pendingChangeNotification = setTimeout(() => {
+                this.pendingChangeNotification = 0;
+                console.log('real onChange: ' + arg);
+                fn(arg);
+            }, 100);
+        };
+    }
     registerOnTouched(fn: () => void): void { this.onTouched = fn; }
 }

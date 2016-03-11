@@ -26,9 +26,35 @@ export class TextValueAccessor implements ControlValueAccessor {
 
     writeValue(value: any): void {
         var normalizedValue = isBlank(value) ? '' : value;
-        this._renderer.setElementProperty(this._elementRef.nativeElement, 'text', normalizedValue);
+        const view = this._elementRef.nativeElement;
+        const oldText = view.text;
+        const newText = normalizedValue.toString();
+        console.log('text: ' + typeof(oldText) + '/' + oldText + ' ' + typeof(newText) + "/" + newText);
+        if (true || oldText !== newText) {
+            //this._renderer.setElementProperty(view, 'text', newText);
+            view.text = newText;
+        }
     }
 
-    registerOnChange(fn: (_: any) => void): void { this.onChange = fn; }
+    private pendingChangeNotification: number = 0;
+
+    //registerOnChange(fn: (_: any) => void): void { this.onChange = fn; }
+    registerOnChange(fn: (_: any) => void): void {
+        //this._elementRef.nativeElement.on('textChange', (args) => {
+            //console.log('onChange: ' + args.object.value);
+            //global.zone.run(() => fn(args.object.value));
+        //});
+        this.onChange = (arg) => {
+            console.log('onChange: ' + arg);
+            if (this.pendingChangeNotification) {
+                clearTimeout(this.pendingChangeNotification);
+            }
+            this.pendingChangeNotification = setTimeout(() => {
+                this.pendingChangeNotification = 0;
+                console.log('real onChange: ' + arg);
+                fn(arg);
+            }, 100);
+        };
+    }
     registerOnTouched(fn: () => void): void { this.onTouched = fn; }
 }

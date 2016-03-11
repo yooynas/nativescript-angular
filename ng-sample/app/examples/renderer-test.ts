@@ -33,7 +33,7 @@ export class ProgressComponent {
         <Progress value="50" style="color: red"></Progress>
         <!--<TimePicker [(ngModel)]='model.deliveryTime' ></TimePicker>
         <Label [text]='model.deliveryTime' ></Label>
-        <DatePicker [(ngModel)]='model.deliveryDate' ></DatePicker>
+        <DatePicker [(ngModel)]='model.deliveryDate' ></DatePicker>-->
         <Label [text]='model.deliveryDate' ></Label>
         <SearchBar [(ngModel)]='model.search'></SearchBar>
         <Label [text]='model.search'></Label>
@@ -42,7 +42,7 @@ export class ProgressComponent {
         <ListPicker [items]='model.listPickerItems' [(ngModel)]='model.selectedIndex'></ListPicker>
         <TextField [(ngModel)]='model.selectedIndex'></TextField>
         <SegmentedBar [items]='model.segmentedBarItems' [(ngModel)]='model.selectedIndex'></SegmentedBar>
-        <Label [text]='model.selectedIndex'></Label>-->
+        <Label [text]='model.selectedIndex'></Label>
         <Switch [(ngModel)]='model.testBoolean'></Switch>
         <Label [text]='model.testBoolean'></Label>
         <Label [text]='model.test'></Label>
