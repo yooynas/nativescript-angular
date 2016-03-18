@@ -42,12 +42,15 @@
 		"nativescript-dev-typescript": "^0.3.1",
 		"shelljs": "^0.5.3",
 		"typescript": "1.8.2",
-		"webpack": "^1.12.9"
+		"webpack": "^1.12.14"
 	},
 	"nativescript": {
 		"id": "org.nativescript.ngsample",
 		"tns-android": {
 			"version": "1.7.0"
 		}
-	}
+	},
+    "scripts": {
+        "webpack": "webpack"
+    }
 }
