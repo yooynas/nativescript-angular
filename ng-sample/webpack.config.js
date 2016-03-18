@@ -2,11 +2,11 @@ var path = require("path");
 var webpack = require("webpack");
 
 
-console.log('PROJECT_DIR: ' + process.env.PROJECT_DIR);
+console.log('PLATFORM: ' + process.env.PLATFORM);
+console.log('PLATFORM_DIR: ' + process.env.PLATFORM_DIR);
 
 module.exports = {
-    //context: "./platforms/android/src/main/assets/app",
-    context: process.env.PROJECT_DIR,
+    context: "./app",
     entry: {
         app: "./app",
     },
@@ -18,19 +18,26 @@ module.exports = {
     },
     externals: [
         function(context, request, callback) {
-            if (/browserify|crypto/.test(request)) {
-                return callback(null, "var {}");
-            } else {
-                callback();
-            }
+            callback();
+            //if (/browserify|crypto/.test(request)) {
+                //return callback(null, "var {}");
+            //} else {
+                //callback();
+            //}
         }
     ],
     resolve: {
         extensions: ["", ".js"],
         packageMains: ["main"],
         modulesDirectories: [
-            "tns_modules",
-        ]
+            "../node_modules",
+        ],
+        alias: {
+            "ui/text-view": "tns-core-modules/ui/text-view/text-view.android.js",
+            "ui/text-base": "tns-core-modules/ui/text-base/text-base.android.js",
+            "ui/editable-text-base": "tns-core-modules/ui/editable-text-base/editable-text-base.android.js",
+            "ui/core/proxy": "tns-core-modules/ui/core/proxy",
+        }
     },
     module: {
         loaders: [
