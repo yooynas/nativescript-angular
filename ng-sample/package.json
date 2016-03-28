@@ -47,10 +47,10 @@
 	"nativescript": {
 		"id": "org.nativescript.ngsample",
 		"tns-android": {
-			"version": "1.7.0"
+			"version": "1.5.1"
 		}
 	},
-    "scripts": {
-        "webpack": "webpack"
-    }
+	"scripts": {
+		"webpack": "webpack"
+	}
 }

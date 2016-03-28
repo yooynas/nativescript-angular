@@ -101,4 +101,4 @@ function getPlatformModuleName(platform, modulePath) {
 
 //console.log(exports.tnsCoreModulesDirs("android"));
 //console.log(exports.tnsCoreModulesFiles("android"));
-console.log(exports.tnsCoreModulesAliases("android"));
+//console.log(exports.tnsCoreModulesAliases("android"));
