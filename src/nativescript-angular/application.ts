@@ -39,7 +39,7 @@ import application = require('application');
 
 export type ProviderArray = Array<Type | Provider | any[]>;
 
-import {defaultPageProvider} from "./platform-providers";
+import {defaultPageProvider, defaultDeviceProvider} from "./platform-providers";
 
 let _platform = null;
 
@@ -65,6 +65,7 @@ export function bootstrap(appComponentType: any,
         provide(ExceptionHandler, {useFactory: () => new ExceptionHandler(DOM, true), deps: []}),
 
         defaultPageProvider,
+        defaultDeviceProvider,
         NativeScriptRootRenderer,
         provide(RootRenderer, {useClass: NativeScriptRootRenderer}),
         NativeScriptRenderer,
