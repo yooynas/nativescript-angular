@@ -5,27 +5,55 @@ import {NavComponent} from "./nav-component";
 import {NS_ROUTER_DIRECTIVES, NS_ROUTER_PROVIDERS} from "../../nativescript-angular/router/ns-router";
 
 @Component({
-    selector: "start-nav-test",
-    directives: [NS_ROUTER_DIRECTIVES],
+    selector: "master",
+    directives: [ROUTER_DIRECTIVES, NS_ROUTER_DIRECTIVES],
     template: `
-    <StackLayout verticalAlignment="center">
-        <Button text="Start" [nsRouterLink]="['/Nav', { depth: 1 }]"></Button>
-        <Button text="Navigate to Detail" [nsRouterLink]="['/Nav', { depth: 1 }, 'Detail', { id: 3 }]"></Button>
-    </StackLayout>
+    <StackLayout>
+        <Label text="First component" class="title"></Label>
+        <Button text="GO TO SECOND" [nsRouterLink]="['Second']" class="link"></Button>
+    </StackLayout>`
+})
+class FirstComponent {
+    constructor() {
+        console.log("FirstComponent")
+    }
+}
+
+@Component({
+    selector: "detail",
+    directives: [ROUTER_DIRECTIVES, NS_ROUTER_DIRECTIVES],
+    template: `
+    <StackLayout>
+        <Label text="Second component" class="title"></Label>
+        <Button text="GO TO FIRST" [nsRouterLink]="['First']" class="link"></Button>
+    </StackLayout>`
+})
+class SecondComponent {
+    constructor() {
+        console.log("SecondComponent")
+    }
+}
+
+@Component({
+    selector: 'navigation-test',
+    directives: [ROUTER_DIRECTIVES, NS_ROUTER_DIRECTIVES],
+    template: `
+        <StackLayout>
+            <StackLayout class="nav">
+                <Button text="First" [nsRouterLink]="['First']"></Button>
+                <Button text="Second" [nsRouterLink]="['Second']"></Button>
+            </StackLayout>
+            
+            <router-outlet></router-outlet>
+        </StackLayout>
     `
 })
-class StartComponent {
-    constructor() {
-        console.log("StartComponent.constructor()")
-    }
+@RouteConfig([
+    { path: '/first', component: FirstComponent, name: 'First', useAsDefault: true },
+    { path: '/second', component: SecondComponent, name: 'Second' },
+])
+export class NavigationTestRouter {
 
-    routerOnActivate(nextInstruction: ComponentInstruction, prevInstruction: ComponentInstruction): any {
-        console.log("StartComponent.routerOnActivate()")
-    }
-
-    routerOnDeactivate(nextInstruction: ComponentInstruction, prevInstruction: ComponentInstruction): any {
-        console.log("StartComponent.routerOnDeactivate()")
-    }
 }
 
 @Component({
@@ -34,9 +62,9 @@ class StartComponent {
     template: `<page-router-outlet></page-router-outlet>`
 })
 @RouteConfig([
-    { path: '/', component: StartComponent, name: 'Start' },
-    { path: '/nav/:depth/...', component: NavComponent, name: 'Nav' },
+    { path: '/first', component: FirstComponent, name: 'First', useAsDefault: true },
+    { path: '/second', component: SecondComponent, name: 'Second' },
 ])
-export class NavigationTest {
+export class NavigationTestPageRouter {
 
 }

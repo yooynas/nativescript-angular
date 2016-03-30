@@ -1,8 +1,18 @@
 ﻿.title {
     font-size: 30;
-    horizontal-align: center;
-    margin:20;
-    color: red;
+    margin: 16;
+}
+
+.nav {
+    orientation: horizontal;
+    horizontal-align: stretch;
+    padding: 4;
+    background-color: lightblue;
+}
+
+.link {
+    horizontal-align: stretch;
+    margin: 10 30 10 30;
 }
 
 .invalid {
@@ -13,9 +23,9 @@
     color: green;
 }
 
-button {
+/*button {
     horizontal-align: center;
-}
+}*/
 
 .odd {
     background-color: hotpink
