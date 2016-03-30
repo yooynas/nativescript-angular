@@ -11,23 +11,22 @@
 }
 
 .link {
-    horizontal-align: stretch;
-    margin: 10 30 10 30;
+    margin: 10 30;
 }
-
+/*
 .invalid {
     color: red;
 }
 
 .valid {
     color: green;
-}
+}*/
 
 /*button {
     horizontal-align: center;
 }*/
 
-.odd {
+/*.odd {
     background-color: hotpink
 }
 
@@ -50,4 +49,4 @@
 .input {
   margin: 30px;
   color:#444;
-}
+}*/

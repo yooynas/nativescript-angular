@@ -5,38 +5,32 @@ import {NavComponent} from "./nav-component";
 import {NS_ROUTER_DIRECTIVES, NS_ROUTER_PROVIDERS} from "../../nativescript-angular/router/ns-router";
 
 @Component({
-    selector: "master",
-    directives: [ROUTER_DIRECTIVES, NS_ROUTER_DIRECTIVES],
+    selector: "first",
+    directives: [NS_ROUTER_DIRECTIVES],
     template: `
     <StackLayout>
         <Label text="First component" class="title"></Label>
         <Button text="GO TO SECOND" [nsRouterLink]="['Second']" class="link"></Button>
     </StackLayout>`
 })
-class FirstComponent {
-    constructor() {
-        console.log("FirstComponent")
-    }
+export class FirstComponent {
 }
 
 @Component({
-    selector: "detail",
-    directives: [ROUTER_DIRECTIVES, NS_ROUTER_DIRECTIVES],
+    selector: "second",
+    directives: [NS_ROUTER_DIRECTIVES],
     template: `
     <StackLayout>
         <Label text="Second component" class="title"></Label>
         <Button text="GO TO FIRST" [nsRouterLink]="['First']" class="link"></Button>
     </StackLayout>`
 })
-class SecondComponent {
-    constructor() {
-        console.log("SecondComponent")
-    }
+export class SecondComponent {
 }
 
 @Component({
     selector: 'navigation-test',
-    directives: [ROUTER_DIRECTIVES, NS_ROUTER_DIRECTIVES],
+    directives: [ROUTER_DIRECTIVES],
     template: `
         <StackLayout>
             <StackLayout class="nav">
