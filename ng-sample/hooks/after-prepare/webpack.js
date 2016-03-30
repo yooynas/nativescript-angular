@@ -2,40 +2,32 @@ var path = require("path");
 var shelljs = require("shelljs");
 
 module.exports = function (logger, platformsData, projectData, hookArgs) {
-    var platformData = platformsData.getPlatformData(hookArgs.platform.toLowerCase());
-    var outDir = platformData.appDestinationDirectoryPath;
-    process.env.PROJECT_DIR = outDir;
-
-    var gradleScript = path.join(outDir, "../../../", "build.gradle");
-    var hasGradle = shelljs.test("-e", gradleScript);
-
-    if (hasGradle) {
-        //clean up any previous settings
-        shelljs.sed("-i", /aaptOptions.*\{[^\}]+\}/, "", gradleScript);
-    }
-
-    if (!process.env.WEBPACK_BUILD) {
-        console.log('Not webpacking...');
+    if (!process.env.TNS_WEBPACK) {
+        console.log("Bundling disabled. Set the TNS_WEBPACK environment variable to enable it.");
         return;
     }
 
+    var platform = hookArgs.platform.toLowerCase();
+    process.env.PLATFORM = platform;
+
+    var platformData = platformsData.getPlatformData(platform);
+    var platformOutDir = platformData.appDestinationDirectoryPath;
+    var platformAppDir = path.join(platformOutDir, "app");
+    process.env.PLATFORM_DIR = platformOutDir;
+
+    var bundler = require("nativescript-dev-webpack");
+
     return new Promise(function (resolve, reject) {
-        return shelljs.exec("webpack", function(code, output) {
+        return shelljs.exec("npm run webpack", function(code, output) {
             if (code === 0) {
-                //shelljs.rm("-rf", path.join(outDir, "app", "*"))
-                shelljs.rm("-rf", path.join(outDir, "app", "main-page*"));
-                shelljs.mv("bundle.js", path.join(outDir, "app", "index.js"));
-
-                var packageJson = path.join(outDir, "app", "starter.js");
-                shelljs.sed("-i", /require.*app\.js.*;/, "require('./index.js');", packageJson);
-
-                if (hasGradle) {
-                    shelljs.sed("-i", /^android\s+\{/m, 'android {\n\taaptOptions { ignoreAssetsPattern "<dir>tns_modules" }', gradleScript);
-                }
+                var appJson = bundler.readPackageJson(platformAppDir);
+                var bundleRelativePath = path.relative(platformOutDir, bundler.getBundleDestination("./app"));
+                appJson.main = path.basename(bundleRelativePath);
+                bundler.writePackageJson(platformAppDir, appJson);
 
                 resolve();
             } else {
-                console.log('webpack failed.');
+                console.log('Webpack bundling failed.');
                 reject();
             }
         });
